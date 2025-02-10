@@ -142,6 +142,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'capstonept01@gmail.com'  
 EMAIL_HOST_PASSWORD = 'bfoh zsxb rxah plmm'  # Use App Password for security
 
-import os
 
-ALLOWED_HOSTS = ['E-Voting_System.onrender.com']
+ALLOWED_HOSTS = [".vercel.app"]
