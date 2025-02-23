@@ -161,7 +161,7 @@
         {% block content %}
         {% for election in details %}
         <p id="eName">{{ election.Election_Name }}</p>
-        <p id="eYear">{{ election.Election_Year }}</p>
+        <p id="eYear">{{ election.Election_Year }} - {{ election.Election_Month }}</p>
         {% empty %}
         <p>No election details found.</p>
         {% endfor %}

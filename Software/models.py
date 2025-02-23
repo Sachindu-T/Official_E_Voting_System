@@ -48,6 +48,7 @@ class Elec_Name(models.Model):
     Election_ID = models.AutoField(primary_key=True)
     Election_Name = models.CharField(unique=True,max_length=80)
     Election_Year = models.IntegerField(unique=True)
+    Election_Month = models.CharField(max_length=12)
 
     class Meta:
         db_table = 'Election_Name'

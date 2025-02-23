@@ -17,6 +17,9 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 # from .models import OTP
 import random
+from django.views.decorators.cache import cache_control
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
 def main(request):
     # Reset session keys for navigation protection
@@ -89,6 +92,7 @@ def user_Verify(request):
                 return send_otp(request)
             else:
                 messages.error(request, "You have already voted for this election!.")
+                return main(request)
         else:
             # return HttpResponse("Invalid password.")
            messages.error(request, "Invalid password.")
@@ -135,7 +139,7 @@ def send_otp(request):
         record.OTP_Count = uOtpCount-1
         record.save()
 
-        return render(request, "otp_verification_1.0.html")
+        return render(request, "OTP_Verification_1.0.html")
     
     
 def send_regisration_otp(request):
@@ -163,7 +167,7 @@ def send_regisration_otp(request):
         send_mail(subject, message, sender_email, [email], fail_silently=False)
         
 
-        return render(request, "otp_verification_1.1.html")
+        return render(request, "OTP_Verification_1.1.html")
 
 def verify_registration(request):
     otp_code = request.session.get('otp_code')
@@ -212,6 +216,7 @@ def verify_otp(request):
         return main(request)
 
 def adminLogin(request):
+    
     # Allow access only if coming from the button click
     if request.session.get('from_button', False):
         request.session['from_button'] = False  
@@ -304,12 +309,15 @@ def insertElectionName(request):
     if Elec_Name.objects.filter(Election_ID=1).exists():
         eName = request.POST['eName'];
         eYear = request.POST['eYear'];
+        eMonth = request.POST['eMonth'];
         Elec_Name.objects.filter(Election_ID=1).update(Election_Name=eName)
         Elec_Name.objects.filter(Election_ID=1).update(Election_Year=eYear)
+        Elec_Name.objects.filter(Election_ID=1).update(Election_Month=eMonth)
     else:
         eName = request.POST['eName'];
         eYear = request.POST['eYear'];
-        Name = Elec_Name(Election_Name = eName,Election_Year = eYear);      
+        eMonth = request.POST['eMonth'];
+        Name = Elec_Name(Election_Name = eName,Election_Year = eYear, Election_Month=eMonth);      
         Name.save()
     return render(request, 'adminInterface.html')
 
@@ -317,6 +325,7 @@ def insertElectionName(request):
 def setOtpCount(request):
     messages.success(request,"OTP count has been reset successfully!")
     Voter.objects.update(OTP_Count = 1)
+    Elec_Results.objects.all().delete()
     return render(request, 'adminInterface.html')
 
 from reportlab.lib.colors import navy

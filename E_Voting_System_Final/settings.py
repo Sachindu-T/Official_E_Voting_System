@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-q@f1=&tu$1&#tld)&zx+(er&d14*@&oj!1tmh5@$%_ay*hxjxi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".vercel.app"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -80,11 +80,11 @@ pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': ('e_voting_system_final'),
-        'USER':('root'),
-        'PASSWORD':(''),
-        'HOST':('localhost'),
-        'PORT':('DB_PORT','3306'),
+        'NAME': 'e_voting_system_final',
+        'USER':'root',
+        'PASSWORD':'',
+        'HOST':'localhost',
+        'PORT':'3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
             }
@@ -143,4 +143,4 @@ EMAIL_HOST_USER = 'capstonept01@gmail.com'
 EMAIL_HOST_PASSWORD = 'bfoh zsxb rxah plmm'  # Use App Password for security
 
 
-ALLOWED_HOSTS = [".vercel.app"]
+
