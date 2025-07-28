@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import main,registrationForm,insertVoterInfo,userLogin, adminLogin, set_from_button,admin_Verify,setElectionName,addNewParty,insertPartyDetails,insertElectionName, selectParty, user_Verify, selectCandidate,otp_verification_page,setOtpCount, generateReport,adminLogout,send_otp, verify_otp, verify_registration
+from .views import main,registrationForm,insertVoterInfo,userLogin, adminLogin, set_from_button,admin_Verify,setElectionName,addNewParty,insertPartyDetails,insertElectionName, selectParty, user_Verify, selectCandidate,otp_verification_page,setOtpCount, generateReport,adminLogout,send_otp, verify_otp, verify_registration, deletePartyPage, deleteParty,resetPassword,forgotPassword,setNewPassword,verify_reset_otp
 
 urlpatterns = [
     path('', main, name='home'),
@@ -26,6 +26,13 @@ urlpatterns = [
     path("verify_registration/",verify_registration, name="verify_registration"),
     path('send_otp/', send_otp, name='send_otp'),
     path('verify_otp/', verify_otp, name='verify_otp'),
+    path('deletePartyPage/', deletePartyPage, name='deletePartyPage'),
+    path('deleteParty/',deleteParty,name='deleteParty'),
+    path('resetPassword/',resetPassword,name='resetPassword'),
+    path('forgotPassword/',forgotPassword,name='forgotPassword'),
+    path('verify_reset_otp/',verify_reset_otp,name='verify_reset_otp'),
+    path('setNewPassword/',setNewPassword,name='setNewPassword'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

@@ -102,10 +102,82 @@ def user_Verify(request):
         messages.error(request, "User not found!")
         return render(request,'userLogin_.html')
 
+def resetPassword(request):
+    # global uName
+    u_Name = request.POST.get('userName');
+    u_NIC = int(request.POST.get('NIC'));
+    u_Email =  request.POST.get('email');
 
+    request.session['uName'] = u_Name
 
+    filtered_user = Voter.objects.filter(User_Name=u_Name)
+
+    if filtered_user.exists():
+        user = filtered_user.first()
+        uOtpCount = user.OTP_Count
+        
+        if (u_NIC == int(user.NIC_Number)) :
+            if (u_Email == user.Email): 
+                messages.success(request, "User identified successfully! Please enter the 6-digit OTP sent to your e-mail address for verification.")
+                record = Voter.objects.get(Email = u_Email)
+
+                record.OTP_Count = uOtpCount+1
+                record.save()
+
+                return send_otp_for_resetPW(request)
+        else:
+           
+           messages.error(request, "Invalid Request.")
+           return render(request,'userLogin_.html')
+    else:
+        # return HttpResponse("User not found.")
+        messages.error(request, "User not found!")
+        return render(request,'userLogin_.html')
+
+def forgotPassword(request):
+        return render(request, 'resetPassword.html')
+
+# def send_otp(request):
+#     uName = request.session.get('uName')
+#     filtered_user = Voter.objects.filter(User_Name=uName)
+#     if filtered_user.exists():
+#         user = filtered_user.first()
+#         uEmail = user.Email
+#         uOtpCount = user.OTP_Count
+#         user = User.objects.filter(email=uEmail).first()
+#         global otp_code
+#         otp_code = str(random.randint(100000, 999999))
+#         request.session['otp_code']= otp_code
+#         # 
+#         subject = "E-Voting System - Verification OTP"
+#         message = f"""
+#         Dear User,
+
+#         Thank you for using our E-Voting System. To complete your verification, please use the OTP code below:
+
+#         🔹 **Your OTP Code:** {otp_code}
+
+#         This OTP is valid for a limited time. Please do not share it with anyone for security reasons.
+
+#         If you did not request this OTP, please ignore this email.
+
+#         Best regards,  
+#         **E-Voting System Team**
+#         """
+#         sender_email = "your_email@gmail.com"
+        
+#         send_mail(subject, message, sender_email, [uEmail], fail_silently=False)
+#         record = Voter.objects.get(Email = uEmail)
+#         record.OTP_Count = uOtpCount-1
+#         record.save()
+
+#         return render(request, "OTP_Verification_1.0.html")
+    
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 def send_otp(request):
+
     uName = request.session.get('uName')
     filtered_user = Voter.objects.filter(User_Name=uName)
     if filtered_user.exists():
@@ -116,58 +188,134 @@ def send_otp(request):
         global otp_code
         otp_code = str(random.randint(100000, 999999))
         request.session['otp_code']= otp_code
-        # 
-        subject = "E-Voting System - Verification OTP"
-        message = f"""
-        Dear User,
 
-        Thank you for using our E-Voting System. To complete your verification, please use the OTP code below:
+    subject = 'Your OTP Code for E-Voting Verification'
+    from_email = 'capstonept01@gmail.com'
+    to = [uEmail]
 
-        🔹 **Your OTP Code:** {otp_code}
+    html_content = render_to_string('emails/otp_email.html', {'otp_code': otp_code})
+    text_content = f"Your OTP Code: {otp_code}\nDo not share this code with anyone."
 
-        This OTP is valid for a limited time. Please do not share it with anyone for security reasons.
+    email = EmailMultiAlternatives(subject, text_content, from_email, to)
+    email.attach_alternative(html_content, "text/html")
+    email.send()
 
-        If you did not request this OTP, please ignore this email.
+    record = Voter.objects.get(Email = uEmail)
+    record.OTP_Count = uOtpCount-1
+    record.save()
 
-        Best regards,  
-        **E-Voting System Team**
-        """
-        sender_email = "your_email@gmail.com"
+    return render(request, "OTP_Verification_1.0.html")
+
+
+# def send_otp_for_resetPW(request):
+#     uName = request.session.get('uName')
+#     filtered_user = Voter.objects.filter(User_Name=uName)
+#     if filtered_user.exists():
+#         user = filtered_user.first()
+#         uEmail = user.Email
+#         uOtpCount = user.OTP_Count
+#         user = User.objects.filter(email=uEmail).first()
+#         global otp_code
+#         otp_code = str(random.randint(100000, 999999))
+#         request.session['otp_code']= otp_code
+#         # 
+#         subject = "E-Voting System - Verification OTP"
+#         message = f"""
+#         Dear User,
+
+#         Thank you for using our E-Voting System. To complete your verification, please use the OTP code below:
+
+#         🔹 **Your OTP Code:** {otp_code}
+
+#         This OTP is valid for a limited time. Please do not share it with anyone for security reasons.
+
+#         If you did not request this OTP, please ignore this email.
+
+#         Best regards,  
+#         **E-Voting System Team**
+#         """
+#         sender_email = "your_email@gmail.com"
         
-        send_mail(subject, message, sender_email, [uEmail], fail_silently=False)
-        record = Voter.objects.get(Email = uEmail)
-        record.OTP_Count = uOtpCount-1
-        record.save()
+#         send_mail(subject, message, sender_email, [uEmail], fail_silently=False)
+#         record = Voter.objects.get(Email = uEmail)
+#         record.OTP_Count = uOtpCount-1
+#         record.save()
 
-        return render(request, "OTP_Verification_1.0.html")
-    
-    
-def send_regisration_otp(request):
-        email = request.POST['email'];
+#         return render(request, "OTP_Verification_1.2.html")
+
+def send_otp_for_resetPW(request):   
+    uName = request.session.get('uName')
+    filtered_user = Voter.objects.filter(User_Name=uName)
+    if filtered_user.exists():
+        user = filtered_user.first()
+        uEmail = user.Email
+        uOtpCount = user.OTP_Count
+        user = User.objects.filter(email=uEmail).first()
+        global otp_code
         otp_code = str(random.randint(100000, 999999))
         request.session['otp_code']= otp_code
-        # 
-        subject = "E-Voting System - Verification OTP"
-        message = f"""
-        Dear User,
 
-        Thank you for registration to our E-Voting System. To complete your verification, please use the OTP code below:
+    subject = 'Your OTP Code for E-Voting Verification'
+    from_email = 'capstonept01@gmail.com'
+    to = [uEmail]
 
-        🔹 **Your OTP Code:** {otp_code}
+    html_content = render_to_string('emails/otp_email.html', {'otp_code': otp_code})
+    text_content = f"Your OTP Code: {otp_code}\nDo not share this code with anyone."
 
-        This OTP is valid for a limited time. Please do not share it with anyone for security reasons.
+    email = EmailMultiAlternatives(subject, text_content, from_email, to)
+    email.attach_alternative(html_content, "text/html")
+    email.send()
 
-        If you did not request this OTP, please ignore this email.
+    record = Voter.objects.get(Email = uEmail)
+    record.OTP_Count = uOtpCount-1
+    record.save()
 
-        Best regards,  
-        **E-Voting System Team**
-        """
-        sender_email = "your_email@gmail.com"
+    return render(request, "OTP_Verification_1.2.html")
+
+# def send_regisration_otp(request):
+#         email = request.POST['email'];
+#         otp_code = str(random.randint(100000, 999999))
+#         request.session['otp_code']= otp_code
+#         # 
+#         subject = "E-Voting System - Verification OTP"
+#         message = f"""
+#         Dear User,
+
+#         Thank you for registration to our E-Voting System. To complete your verification, please use the OTP code below:
+
+#         🔹 **Your OTP Code:** {otp_code}
+
+#         This OTP is valid for a limited time. Please do not share it with anyone for security reasons.
+
+#         If you did not request this OTP, please ignore this email.
+
+#         Best regards,  
+#         **E-Voting System Team**
+#         """
+#         sender_email = "your_email@gmail.com"
         
-        send_mail(subject, message, sender_email, [email], fail_silently=False)
+#         send_mail(subject, message, sender_email, [email], fail_silently=False)
         
 
-        return render(request, "OTP_Verification_1.1.html")
+#         return render(request, "OTP_Verification_1.1.html")
+
+def send_regisration_otp(request):  
+    email = request.POST['email'];
+    otp_code = str(random.randint(100000, 999999))
+    request.session['otp_code']= otp_code
+
+    subject = 'Your OTP Code for E-Voting Verification'
+    from_email = 'capstonept01@gmail.com'
+    to = [email]
+
+    html_content = render_to_string('emails/otp_email.html', {'otp_code': otp_code})
+    text_content = f"Your OTP Code: {otp_code}\nDo not share this code with anyone."
+
+    email = EmailMultiAlternatives(subject, text_content, from_email, to)
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
+    return render(request, "OTP_Verification_1.1.html")
 
 def verify_registration(request):
     otp_code = request.session.get('otp_code')
@@ -215,6 +363,29 @@ def verify_otp(request):
         record.save()
         return main(request)
 
+def verify_reset_otp(request):
+    otp_code = request.session.get('otp_code');
+    inputOTP = request.POST['otp'];
+
+    if (otp_code == inputOTP):
+        messages.success(request,"User verified Successfully!")
+        return render(request, "setNewPassword.html")
+    else:
+         messages.error(request,"Invalid OTP!")
+         return main(request)
+
+def setNewPassword(request):
+    uName = request.session.get('uName')
+    pWord = request.POST['password'];
+
+    record = Voter.objects.get(User_Name = uName)
+
+    record.Password = pWord
+    record.save()
+    messages.success(request,"Password reset successfully!")
+    return main(request)
+
+
 def adminLogin(request):
     
     # Allow access only if coming from the button click
@@ -256,6 +427,21 @@ def addNewParty(request):
         return render(request, 'addNewParty.html')
     else:
         return HttpResponseForbidden("You cannot access this page directly.")
+    
+def deletePartyPage(request):
+    politicalParties = Party.objects.all()
+    if request.session.get('from_button', False):
+        request.session['from_button'] = False  # Reset after access
+        return render(request, 'deleteParty_1.0.html',{'politicalParties':politicalParties})
+    else:
+        return HttpResponseForbidden("You cannot access this page directly.")
+    
+def deleteParty(request):
+    partyName = request.POST.get("partyName")
+    filtered_party = Party.objects.filter(Party_Name=partyName)
+    filtered_party.delete()
+    messages.success(request, "Party Deleted Successfully!.")
+    return render(request,'adminInterface.html')
     
 def selectParty(request):
     # request.session['from_button'] = False
@@ -441,11 +627,12 @@ def set_from_button(request, page_name):
         return redirect('setOtpCount')
     elif page_name=="generateReport":
         return redirect('generateReport')
+    elif page_name=="deletePartyPage":
+        return redirect('deletePartyPage')
     elif page_name=="adminLogout":
         return redirect('adminLogout')
     else:
         return HttpResponseForbidden("Invalid page request.")
-
 
 def otp_verification_page(request):
     return render(request, "otp_verification.html")

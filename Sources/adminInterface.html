@@ -69,8 +69,8 @@
             position: absolute;
             left: 10%;
             right: 10%;
-            top: 15%;
-            bottom: 73%;
+            top: 12%;
+            bottom: 76%;
 
             background: rgba(28, 251, 218, 0.61);
             border: 2px solid #BAA8A8;
@@ -92,8 +92,8 @@
             position: absolute;
             left: 10%;
             right: 10%;
-            top: 35%;
-            bottom: 53%;
+            top: 29%;
+            bottom: 59%;
 
             background: rgba(118, 251, 28, 0.61);
             border: 2px solid #BAA8A8;
@@ -115,8 +115,8 @@
             position: absolute;
             left: 10%;
             right: 10%;
-            top: 55%;
-            bottom: 33%;
+            top: 46%;
+            bottom: 42%;
 
             background: rgba(251, 214, 28, 0.96);
             border: 2px solid #BAA8A8;
@@ -138,8 +138,8 @@
             position: absolute;
             left: 10%;
             right: 10%;
-            top: 75%;
-            bottom: 13%;
+            top: 63%;
+            bottom: 25%;
 
             background: rgba(255, 47, 144, 0.949);
             border: 2px solid #BAA8A8;
@@ -154,12 +154,35 @@
             background-color: rgba(213, 29, 115, 0.949);
         }
 
+        #actionButton_5 {
+
+            box-sizing: border-box;
+
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            top: 80%;
+            bottom: 8%;
+
+            background: rgba(224, 3, 249, 0.949);
+            border: 2px solid #BAA8A8;
+            box-shadow: 5px 4px 7.4px rgba(0, 0, 0, 0.25);
+            border-radius: 7px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+
+        }
+
+        #actionButton_5:hover {
+            transform: scale(1.1);
+            background-color: rgba(142, 15, 164, 0.949);
+        }
+
         #Logout {
 
             position: absolute;
             left: 75%;
             right: 5%;
-            top: 93%;
+            top: 94%;
         }
     </style>
 
@@ -201,9 +224,18 @@
                 <button class="" type="button" id="actionButton_4"
                     onclick="location.href = '{% url 'navigate' 'addNewParty' %}'"><b>Add New Political
                         Party</b></button>
+                <button class="" type="button" id="actionButton_5"
+                    onclick="location.href = '{% url 'navigate' 'deletePartyPage' %}'"><b>Delete a Political
+                        Party</b></button>
             </div>
+            <!-- <button class="btn btn-outline-danger" type="button" id="Logout" target="_blank"
+                onclick="location.href = '{% url 'navigate' 'adminLogout' %}'"><b>Logout</b></button> -->
             <button class="btn btn-outline-danger" type="button" id="Logout"
-                onclick="location.href = '{% url 'navigate' 'adminLogout' %}'"><b>Logout</b></button>
+                onclick="window.open('{% url 'navigate' 'adminLogout' %}', '_blank')">
+                <b>Logout</b>
+            </button>
+
+
         </div>
     </div>
 
