@@ -23,4 +23,4 @@ This project allows registered users to cast their votes digitally and ensures f
 
 
 🌐 Live Demo
-👉 Hosted link - (https://sachofficial.pythonanywhere.com/)
+👉[Click Here to View Project](https://sachofficial.pythonanywhere.com/)
